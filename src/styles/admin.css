@@ -1,0 +1,102 @@
+* {
+    box-sizing: border-box;
+}
+
+#candidate {
+    width: 100%;
+    font-size: larger;
+    font-weight: bold;
+    padding: 12px;
+    margin: 0 auto;
+    background-image: linear-gradient(90deg, rgb(236, 236, 236), rgb(109, 170, 240));
+    height: 100vh;
+}
+
+#candidate h2 {
+   color: #352019;
+}
+
+#register {
+    width: 100%;
+    margin: 0 auto;
+    
+}
+
+.election_list, .election_outlet {
+    width: 100%;
+    margin: 0 auto;
+}
+
+
+
+.candidate_form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 550px;
+    margin: 0 auto;
+    
+}
+
+#candidate div {
+    color: grey;
+    border-radius: 3px;
+    margin: 30px 10px;
+ 
+}
+
+.control {
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.control Button {
+    width: 90px;
+    margin: 0 10px ;
+}
+
+.header {
+    margin: 0 auto;
+    font-size: 1em;
+    
+}   
+
+.input, .select {
+    padding: 10px ;
+    width: 100%;
+    border: 1px solid #352019;
+    border-radius: 12px;
+}
+#candidate .button {
+    margin-top: 50px;
+    
+    height: 40px;
+    padding: 5px 0px;
+}
+
+.candidate_input {
+    display: flex;
+    flex-direction: column;
+
+}
+.candidate_register {
+    padding-bottom: 5px;
+
+}
+
+
+
+.header {
+    width: 100%;
+
+}
+
+  .result_table_row{
+    display: flex;
+    justify-content: space-around;
+    
+  }
+
+
+/* ELECTIONS */
+

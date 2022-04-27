@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-
+import "../App.css"
 import { Button, Navbar, Nav, Container } from "react-bootstrap";
 import Web3Modal from "web3modal";
 import Web3 from "web3";
@@ -119,18 +119,18 @@ export const NavBar = () => {
     // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
   }, [walletConnected]);
   return (
-    <div className="">
-      <Navbar bg="dark" variant="dark">
+    <div >
+      <Navbar variant="dark" bg="primary">
         <Container>
-          <Navbar.Brand href="/">Zuri</Navbar.Brand>
+          <Navbar.Brand href="/">ZurCemy</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link className="mx-2" href="/">
               Home
             </Nav.Link>
-            <Nav.Link className="mx-2" href="/election">
+            <Nav.Link className="mx-2" href="/admin">
               Admin
             </Nav.Link>
-            <Nav.Link className="mx-2" href="/vote">
+            <Nav.Link className="mx-2" href="/voting">
               Vote
             </Nav.Link>
             {walletConnected && address.length > 0 ? (

@@ -13,11 +13,11 @@ const Candidate = () => {
         <div id='votecards' >
 
                 <div className='header text-primary text-center font-italic'>
-                    <h3>ZurChemy</h3>
+                    <h3>Zuri Vote</h3>
                     <p>Your polling unit</p>
                     <hr></hr>
                 </div>              
-                <p className='text-dark pl-2'>{name.toUpperCase()}</p>
+                <p className='pl-5'>{name.toUpperCase()}</p>
 
             {
                 status == "result" ? (
@@ -30,7 +30,7 @@ const Candidate = () => {
                         <th>Points</th>
                       </tr>
                       <tr className="result_table_row">
-                        <td>Harry</td>
+                        <td>candidate 1</td>
                         <td>1</td>
                         
                       </tr>

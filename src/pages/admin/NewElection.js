@@ -10,7 +10,7 @@ const NewElection = () => {
                 <hr></hr>
             <form className='candidate_form'>
                 <div className='header text-primary text-center font-italic'>
-                    <h3>ZurChemy</h3>
+                    <h3>Zuri Vote</h3>
                     <p>Voting platform</p>
                     <hr></hr>
                 </div>

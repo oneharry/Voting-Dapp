@@ -12,13 +12,13 @@ const VoteList = () => {
     }
     return(
 
-        <div id="elections">
+        <div id="election">
             <p>Elections</p>
             <hr></hr>
 
             <div className='election_main'>
                 <div className='header text-primary text-center font-italic'>
-                    <h3>ZurChemy</h3>
+                    <h3>Zuri Vote</h3>
                     <p>Voting platform</p>
                     <hr></hr>
                  </div>
@@ -27,9 +27,9 @@ const VoteList = () => {
                     {
                         elections.map(name => {
                             return(
-                                <Link to="vote" state={{name}} onClick={() => alert(name)} className='election_item '>
+                                <Link to="/vote" state={{name}} onClick={() => console.log(name)} className='election_item '>
                                 <h4>{name}</h4>
-                                <p>Description</p>
+                                
                             </Link> 
                             )
                    

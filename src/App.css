@@ -20,6 +20,12 @@
 
 .home_image {
   margin: auto;
+  width: 1000px;
+}
+
+.home_image img {
+  width: 100%;
+  height: 100%;
 }
 
 .footer {
@@ -31,6 +37,7 @@
   line-height: 20px;
   color: #26263b;
   word-wrap: normal;
+  font-size: large;
 }
 
 .buttons {

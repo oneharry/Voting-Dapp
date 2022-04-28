@@ -10,6 +10,8 @@ export const NavBar = () => {
   const [walletConnected, setWalletConnected] = useState(false);
   const [address, setAddress] = useState("");
 
+  const [isStaff, setIsStaff] = useState(true);
+
   const providerOptions = {
     walletconnect: {
       package: WalletConnectProvider, // required
@@ -120,17 +122,42 @@ export const NavBar = () => {
   }, [walletConnected]);
   return (
     <div >
-      <Navbar variant="dark" bg="primary">
+      <Navbar variant="primary" bg="white">
         <Container>
-          <Navbar.Brand href="/">ZurCemy</Navbar.Brand>
+          <Navbar.Brand href="/">ZuriVote</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link className="mx-2" href="/">
+            <Nav.Link className="navlink mx-2" href="/">
               Home
             </Nav.Link>
-            <Nav.Link className="mx-2" href="/admin">
-              Admin
+            {
+              isStaff ? (
+              <Nav.Link className="navlink mx-2" href="/elections">
+              Manage
             </Nav.Link>
-            <Nav.Link className="mx-2" href="/voting">
+            
+              )
+              : null
+            }
+            {
+              isStaff ? (
+              <Nav.Link className="navlink mx-2" href="/access">
+              Access control
+            </Nav.Link>
+            
+              )
+              : null
+            }    
+            {
+              isStaff ? (
+              <Nav.Link className="navlink mx-2" href="/tokens">
+              Token
+            </Nav.Link>
+            
+              )
+              : null
+            }                    
+            <Nav.Link className="navlink mx-2" href="/voting">
+            
               Vote
             </Nav.Link>
             {walletConnected && address.length > 0 ? (

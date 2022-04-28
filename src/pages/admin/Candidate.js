@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 
 const Candidate = () => {
-    const [status, setStatus] = useState("result")
+    const [status, setStatus] = useState("ready")
     const [fileBuff, setFileBuff] = useState();
     const [loading, seloading] = useState();
     const [loading1, setloading1] = useState();

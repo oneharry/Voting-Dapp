@@ -3,13 +3,14 @@
 }
 
 #candidate {
-    width: 100%;
+    max-width: 1000px;
     font-size: larger;
     font-weight: bold;
     padding: 12px;
     margin: 0 auto;
-    background-image: linear-gradient(90deg, rgb(236, 236, 236), rgb(109, 170, 240));
+    background-image: white;
     height: 100vh;
+    color: #ceddeb;
 }
 
 #candidate h2 {
@@ -22,12 +23,44 @@
     
 }
 
-.election_list, .election_outlet {
+.candidate_list, .election_outlet {
     width: 100%;
     margin: 0 auto;
 }
 
+.candidate_main {
+    width: 100%;
+    margin: 0 auto;
+}
 
+.candidate_list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+}
+
+
+
+.candidate_item {
+    text-align: start;
+    padding: 3px 10px 3px 20px;
+    cursor: pointer;
+    width: 40%;
+    border: none;
+    background-color: #fdfcfb;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    margin-left: 15px;
+    margin-right: 15px;
+    text-decoration: none;
+    color: #352019;
+    box-shadow: 1px 1px 3px 1px #352019;
+}
+
+.candidate_item:hover {
+    background-color: #f3f6fa;
+    text-decoration: none;
+}
 
 .candidate_form {
     display: flex;

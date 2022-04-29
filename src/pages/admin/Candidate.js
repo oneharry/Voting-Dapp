@@ -5,11 +5,9 @@ import { useLocation } from 'react-router-dom';
 
 const Candidate = () => {
     const [status, setStatus] = useState("ready")
-    const [fileBuff, setFileBuff] = useState();
-    const [loading, seloading] = useState();
-    const [loading1, setloading1] = useState();
-  
-    const [cid, setCID] = useState('')
+    const [isStaff, setIsStaff] = useState(true);
+    const [isChairman, setIsChairman] = useState(true);
+    
 
     //name of clicked election
     const {name} = useLocation().state;
@@ -42,9 +40,27 @@ const Candidate = () => {
                 </span>
                 
                 <div className='control d-flex  justify-content-start'>
-                    <Button variant='success' onClick={() => setStatus("ongoing")}>Start</Button>
-                    <Button variant='danger' onClick={() => setStatus("ended")}>End</Button>
-                    <Button variant='primary' onClick={() => setStatus("result")}>Result</Button>
+                    {
+                      isChairman ? (
+                          <div>
+                             <Button variant='success' onClick={() => setStatus("ongoing")}>Start</Button>
+                              <Button variant='danger' onClick={() => setStatus("ended")}>End</Button>
+                          </div>
+                      )
+  
+                      : null
+                    }
+
+                    {
+                       (isStaff && status == "ended") ?  
+                      <div>
+                      <Button variant='primary' onClick={() => setStatus("result")}>Result</Button>
+                        
+                      </div>
+                      : null
+                      }
+                   
+                   
                 </div>
             </div>
 

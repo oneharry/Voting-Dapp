@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../App.css"
+import "../App.css";
 import { Button, Navbar, Nav, Container } from "react-bootstrap";
 import Web3Modal from "web3modal";
 import Web3 from "web3";
@@ -67,6 +67,7 @@ export const NavBar = () => {
         // When used for the first time, it prompts the user to connect their wallet
         await getProviderOrSigner();
         setWalletConnected(true);
+        localStorage.setItem("wall", "true");
 
         // Subscribe to accounts change
         provider.on("accountsChanged", async (accounts) => {
@@ -101,13 +102,14 @@ export const NavBar = () => {
 
   const disconnectWallet = async () => {
     setAddress("");
+    localStorage.removeItem("wall");
   };
 
   useEffect(() => {
     const { ethereum } = window;
 
     if (ethereum) {
-      if (!walletConnected) {
+      if (localStorage.getItem("wall")) {
         // Assign the Web3Modal class to the reference object by setting it's `current` value
         // The `current` value is persisted throughout as long as this page is open
         web3ModalRef.current = new Web3Modal({
@@ -121,7 +123,7 @@ export const NavBar = () => {
     // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
   }, [walletConnected]);
   return (
-    <div >
+    <div>
       <Navbar variant="primary" bg="white">
         <Container>
           <Navbar.Brand href="/">ZuriVote</Navbar.Brand>
@@ -129,35 +131,22 @@ export const NavBar = () => {
             <Nav.Link className="navlink mx-2" href="/">
               Home
             </Nav.Link>
-            {
-              isStaff ? (
+            {isStaff ? (
               <Nav.Link className="navlink mx-2" href="/elections">
-              Manage
-            </Nav.Link>
-            
-              )
-              : null
-            }
-            {
-              isStaff ? (
+                Manage
+              </Nav.Link>
+            ) : null}
+            {isStaff ? (
               <Nav.Link className="navlink mx-2" href="/access">
-              Access control
-            </Nav.Link>
-            
-              )
-              : null
-            }    
-            {
-              isStaff ? (
+                Access control
+              </Nav.Link>
+            ) : null}
+            {isStaff ? (
               <Nav.Link className="navlink mx-2" href="/tokens">
-              Token
-            </Nav.Link>
-            
-              )
-              : null
-            }                    
+                Token
+              </Nav.Link>
+            ) : null}
             <Nav.Link className="navlink mx-2" href="/voting">
-            
               Vote
             </Nav.Link>
             {walletConnected && address.length > 0 ? (

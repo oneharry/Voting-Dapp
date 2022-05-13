@@ -1,41 +1,53 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../styles/admin.css";
-import { Button } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { Button, Alert, Fade, Modal } from "react-bootstrap";
+import { useLocation, Link } from "react-router-dom";
 import { BigNumber, ethers } from "ethers";
 import voting from "../../utils/voting.json";
 import { get } from "https";
 import Web3 from "web3";
+import ipfs from "../../utils/ipfs"
 
-const Candidate = () => {
-  const [status, setStatus] = useState("ready");
-  const [isStaff, setIsStaff] = useState(true);
-  const [isChairman, setIsChairman] = useState("");
+const Candidate = ({isChairman}) => {
+  const [status, setStatus] = useState("");
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
+  const [message0, setMessage0] = useState("");
   const [message, setMessage] = useState("");
   const [message2, setMessage2] = useState("");
   const [address, setAddress] = useState("");
+  const [buffer, setBuffer] = useState("");
+  const [votes, setVotes] = useState([]);
+  const [numberOfVoters, setNumberOfVoters] = useState(0);
+
+
 
   const nameRef = useRef();
 
-  const voteContractAddress = "0x010a6fC859002Eb14940f03925E69FCfDF5c138f";
+  const voteContractAddress = voting.contract;
   const voteContractABI = voting.abi;
 
   //name of clicked election
   const { name } = useLocation().state;
 
   //handling upload
-  const fileUpload = async (e) => {
+  const fileUpload = (e) => {
     e.preventDefault();
+    const file = e.target.files[0];
+    const reader = new window.FileReader()
+    reader.readAsArrayBuffer(file)
+    reader.onloadend = () => {
+      
+      let buff = Buffer(reader.result);
+      setBuffer(buff)
+    }
+
+    
   };
 
-  //handle file upload button click
-  const register = async (e) => {
-    e.preventDefault();
-  };
+
 
   const getElections = async () => {
     try {
@@ -54,6 +66,8 @@ const Candidate = () => {
         const publicData = await voteContract.getAllElection({
           gasLimit: 300000,
         });
+
+
         console.log(publicData);
         setElections(publicData);
 
@@ -87,7 +101,15 @@ const Candidate = () => {
           gasLimit: 3000000,
         });
 
+        
         console.log("Mining...", Txn.hash);
+
+        const electionEnabled = () => {
+          setLoading1(false);
+          setMessage("Election has been enabled");
+        };
+        voteContract.on("EnableVoting", electionEnabled);
+      
       }
 
       //handle smartcontract here
@@ -115,8 +137,51 @@ const Candidate = () => {
         const Txn = await voteContract.disableVoting(name, {
           gasLimit: 3000000,
         });
-
         console.log("Mining...", Txn.hash);
+
+        const electionStopped = () => {
+          setLoading1(false);
+          setMessage("Election has been stopped");
+        };
+    
+        voteContract.on("StopVoting", electionStopped);
+        
+      }
+
+      
+    } catch (error) {
+      setLoading1(false);
+      console.log(error);
+    }
+  };
+
+  const enableResult = async (e) => {
+    e.preventDefault();
+    setLoading1(true);
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const voteContract = new ethers.Contract(
+          voteContractAddress,
+          voteContractABI,
+          signer
+        );
+
+        const Txn = await voteContract.allowResultCompile(name, {
+          gasLimit: 3000000,
+        });
+        
+        console.log("Mining...", Txn.hash);
+
+        const resultEnabled = () => {
+          setLoading1(false);
+          setMessage("Result view is enabled");
+        };
+    
+        voteContract.on("changeVoteStatus", resultEnabled);
       }
 
       //handle smartcontract here
@@ -133,21 +198,39 @@ const Candidate = () => {
       const { ethereum } = window;
 
       if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const voteContract = new ethers.Contract(
-          voteContractAddress,
-          voteContractABI,
-          signer
-        );
-
+        //assert input field/image upload
         const candidate = nameRef.current.value;
+          console.log(candidate, buffer);
+        if(candidate == "" && buffer == "" ) {
+          setLoading(false);
+          setMessage0("Enter name and upload image")
+        
+        } else {
+          const provider = new ethers.providers.Web3Provider(ethereum);
+          const signer = provider.getSigner();
+          const voteContract = new ethers.Contract(
+            voteContractAddress,
+            voteContractABI,
+            signer
+          );
+            const buffData = await ipfs.add(buffer);
+            
+            const imgUrl = buffData[0].hash;
+            console.log(imgUrl)
+          const Txn = await voteContract.addCandidate(name, candidate, imgUrl, {
+            gasLimit: 3000000,
+          });
 
-        const Txn = await voteContract.addCandidate(name, candidate, {
-          gasLimit: 3000000,
-        });
 
-        console.log("Mining...", Txn.hash);
+          const candidateCreated = () => {
+            setLoading(false);
+            setMessage("Candidate added successfully");
+          };
+          
+          voteContract.on("AddCandidate", candidateCreated);
+          console.log("Mining...", Txn.hash);
+        }
+
       }
 
       //handle smartcontract here
@@ -157,159 +240,214 @@ const Candidate = () => {
     }
   };
 
-  const getChairman = async () => {
+  //get election status
+  const votingStatus = async () => {
     try {
-      const { ethereum } = window;
+      const {ethereum} = window;
 
-      if (ethereum) {
-        //setLoading(true);
+      if(ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const voteContract = new ethers.Contract(
-          voteContractAddress,
-          voteContractABI,
-          signer
-        );
 
-        const publicData = await voteContract.owner({
-          gasLimit: 300000,
-        });
-        console.log(publicData);
-        setIsChairman(publicData);
+        const voteContract = new ethers.Contract(voteContractAddress, voteContractABI, signer);
 
-        //setStacked(Number(BigNumber.from(tokenStaked).toString()) / 10 ** 18);
-        //setToken(Number(BigNumber.from(tokenBalance).toString()) / 10 ** 18);
-        //setLoading(false);
+      //checks if user has already voted
+        const publicData = await voteContract.getVotingStatus(name);
+    
+        if(publicData == 0) {
+          setStatus('ready')
+        }
+        if(publicData == 1) {
+          setStatus('ongoing')
+        }
+        if(publicData == 2) {
+          setStatus('ended')
+        }
+        if(publicData == 3) {
+          setStatus('result')
+        }
+        
       } else {
-        console.log("Ethereum object doesn't exist!");
+        alert("Ethereum object doesn't exist!")
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
-  useEffect(() => {
-    getElections();
-    getChairman();
-  }, []);
+
+  //get results
+  const fetchResults = async () => {
+    try {
+      const {ethereum} = window;
+
+      if(ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const voteContract = new ethers.Contract(voteContractAddress, voteContractABI, signer);
+
+      //checks if user has already voted
+        const publicData = await voteContract.getResults(name);
+
+        let resultArr = [];
+        for(let i = 0; i < publicData[0].length; i++) {
+          let result = {
+            candidate: publicData[0][i],
+            vote: publicData[1][i].toNumber(),
+          }
+          console.log(result)
+          resultArr.push(result);
+
+        }
+
+        setVotes(resultArr);
+        console.log(votes)
+      } else {
+        alert("Ethereum object doesn't exist!")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getNumberOfVoters = async() => {
+    try {
+      const {ethereum} = window;
+
+      if(ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const voteContract = new ethers.Contract(voteContractAddress, voteContractABI, signer);
+
+      //checks if user has already voted
+        const publicData = await voteContract.getNumberOfVoters(name);
+        setNumberOfVoters(publicData.toNumber())
+      } else {
+        alert("Ethereum object doesn't exist!")
+      } 
+    } catch(error) {
+      console.log(error)
+    }
+  }
 
   useEffect(async () => {
-    const { ethereum } = window;
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    try {
+      console.log(status)
 
-    const accounts = await ethereum.request({ method: "eth_accounts" });
-    setAddress(accounts[0]);
-    console.log(accounts[0]);
-    const signer = provider.getSigner();
-    const voteContract = new ethers.Contract(
-      voteContractAddress,
-      voteContractABI,
-      provider
-    );
+      await votingStatus();
+      getElections();
+      fetchResults()
+      getNumberOfVoters()
+      setTimeout(() => {
+        setMessage("")
+      }, 5000)
 
-    const candidateCreated = () => {
-      setLoading(false);
-      setMessage("Candidate added successfully");
-    };
+    } catch (error) {
+      console.log(error)
+    }
 
-    const electionEnabled = () => {
-      setLoading1(false);
-      setMessage2("Election has been enabled");
-    };
+    
+  }, [status, message]);
 
-    const electionStopped = () => {
-      setLoading1(false);
-      setMessage2("Election has been stopped");
-    };
+  // useEffect(async () => {
+    
+  // }, []);
 
-    voteContract.on("AddCandidate", candidateCreated);
-    voteContract.on("EnableVoting", electionEnabled);
-    voteContract.on("StopVoting", electionStopped);
-
-    return () => {
-      voteContract.removeAllListeners();
-    };
-  }, []);
 
   return (
-    <div id="candidate">
-      <p>{name}</p>
-      <hr />
-      <div className="section election_info">
-        <span className="ml-2 d-flex align-items-start">
-          <p className="text-start">Status: </p>
-          <solid className="h6">{status}</solid>
-        </span>
-        <div className="alert-success">
-          {message2.length > 0 ? message2 : ""}
-        </div>
-        <div className="control d-flex  justify-content-start">
-          {isChairman.toLowerCase() === address.toLowerCase() ? (
-            <div>
-              <div>{loading1 === true ? "loading....." : ""}</div>
-              <Button variant="success" onClick={startElection}>
-                Start
-              </Button>
-              <Button variant="danger" onClick={stopElection}>
-                End
-              </Button>
-            </div>
-          ) : null}
+    <div>
+        { isChairman ?  (
+        <div id="candidate">
+        {
+                message.length > 0 ? <Alert className=" position-fixed end-40 " variant="success" dismissible={true} >{message}</Alert> : null
+        }
+        <p>{name}</p>
 
-          {isStaff && status == "ended" ? (
-            <div>
-              <Button variant="primary" onClick={() => setStatus("result")}>
-                Result
-              </Button>
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      {status == "result" ? (
-        <div className="mt-5 result section">
-          <h2 className=" header text-center">Result - {name}</h2>
-          <hr />
-          <table className="table">
-            <tr className="result_table_row">
-              <th>Candidate</th>
-              <th>Points</th>
-            </tr>
-            <tr className="result_table_row">
-              <td>Harry</td>
-              <td>1</td>
-            </tr>
-          </table>
-        </div>
-      ) : (
-        <div className="section candidate_register">
-          <div className="alert-success">
-            {message.length > 0 ? message : ""}
+        <hr />
+        <div className="section election_info">
+          <span className="ml-2 d-flex align-items-start">
+            
+          </span>
+          <div className="control d-flex  justify-content-start">
+              <p className="text-start">status:  {status}</p>
+              <div>
+                <p className="text-center text-success">{loading1 === true ? "loading....." : ""}</p>
+                <Button variant="success" onClick={startElection}>
+                  Start
+                </Button>
+                <Button variant="danger" onClick={stopElection}>
+                  End
+                </Button>
+                <Button variant="primary" onClick={enableResult}>
+                  Result
+                </Button>
+              </div>
+            
           </div>
-          <h2 className=" header text-dark text-center">Candidates</h2>
-          <hr />
-          <form className="candidate_form">
-            <div className="candidate_input">
-              <input
-                className="input"
-                ref={nameRef}
-                placeholder="Name of Candidate"
-              />
-              {/* <div>{loading1 === true ? "uploading...." : ""}</div> */}
-              <input className="my-3" type="file" onChange={fileUpload}></input>
-              {/* <div>{loading === true ? "loading....." : ""}</div> */}
-              <div>{loading === true ? "loading......" : ""}</div>
-              <Button
-                onClick={addCandidate}
-                className="button"
-                variant="success"
-              >
-                Register
-              </Button>
-            </div>
-          </form>
         </div>
-      )}
+  
+        {status == "result" ? (
+          <div className=" result section">
+            <p>Total votes: {numberOfVoters}</p>
+            <h2 className=" header text-center">Result - {name}</h2>
+            <hr />
+            <table className="table">
+              <tr className="result_table_row">
+                <th>Candidate</th>
+                <th>Vote</th>
+              </tr>
+              <div className="result_data">
+              {
+                votes.map(vote => {
+                  return (
+                    
+                    <tr key={vote.candidate} className="result_table_row vote_rows">
+                      <td>{vote.candidate}</td>
+                      <td>{vote.vote}</td>
+                    </tr>
+                  )
+                })
+              }
+            </div>
+            </table>
+          </div>
+        ) : (
+          <div className="section candidate_register">
+            {/* <div className="alert-success">
+              {message.length > 0 ? message : ""}
+            </div> */}
+            <h2 className=" header text-dark text-center">Add candidates</h2>
+            <hr />
+            <form className="candidate_form">
+              <p className="text-danger">{message0}</p>
+              <div className="candidate_input">
+                <input
+                  className="input"
+                  ref={nameRef}
+                  placeholder="Name of Candidate"
+                />
+                {/* <div>{loading1 === true ? "uploading...." : ""}</div> */}
+                <input className="my-3" type="file" onChange={fileUpload} required></input>
+                {/* <div>{loading === true ? "loading....." : ""}</div> */}
+                <Button
+                  onClick={addCandidate}
+                  className="button"
+                  variant="success"
+                >{
+                  loading ? "Please wait..." : "Register"
+                }
+                
+                </Button>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
+      )
+      : <Link className="text-center text-primary" to="/">Home</Link>
+    }
     </div>
   );
 };

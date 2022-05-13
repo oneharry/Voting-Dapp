@@ -4,7 +4,7 @@
 
 /* STYLING HOME */
 .main {
-  height: 100vh;
+  height: 80vh;
 }
 
 .home_content {
@@ -133,12 +133,12 @@
 
 .navlink {
   padding: 3px;
+  border-radius: 10px;
 }
 
 .navlink:hover {
   background-color: rgb(245, 248, 255);
   color: white;
-  border-radius: 15px;
-  padding: 0.5px;
+  padding: 4px;
 }
 

@@ -10,7 +10,7 @@ const VoteList = () => {
 
   const [elections, setElections] = useState([]);
 
-  const voteContractAddress = "0x010a6fC859002Eb14940f03925E69FCfDF5c138f";
+  const voteContractAddress = voting.contract;
   const voteContractABI = voting.abi;
 
   const getElections = async () => {
@@ -31,7 +31,16 @@ const VoteList = () => {
           gasLimit: 300000,
         });
         console.log(publicData);
-        setElections(publicData);
+        const reversePublicData = arr => {
+          let newArr = [];
+          arr.forEach(element => {
+            newArr.unshift(element);
+          });
+          return newArr;
+        } 
+        const t = await reversePublicData(publicData)
+        console.log(t);
+        setElections(t);
 
         //setStacked(Number(BigNumber.from(tokenStaked).toString()) / 10 ** 18);
         //setToken(Number(BigNumber.from(tokenBalance).toString()) / 10 ** 18);
@@ -62,20 +71,30 @@ const VoteList = () => {
           <p>Voting platform</p>
           <hr></hr>
         </div>
-        <div className="election_list ">
-          {elections.map((name) => {
-            return (
-              <Link
-                to="/vote"
-                state={{ name }}
-                onClick={() => console.log(name)}
-                className="election_item "
-              >
-                <h4>{name}</h4>
-              </Link>
-            );
-          })}
-        </div>
+        {
+          !elections.length ? <p className="text-center">Loading elections...</p>
+          : (
+            <div className="election_list ">
+            {elections.map((name, index) => {
+              return (
+                <div
+                  
+                  className="election_item d-flex flex-column justify-content-around align-items-center"
+                >
+                  <h4 className="text-center">{name.toUpperCase()}</h4>
+                  <Link 
+                    to="/vote"
+                    state={{ name, index }}
+                    className="election_item_link "
+                  ><i class="bi bi-arrow-right" ></i></Link>
+                  
+                </div>
+              );
+            })}
+          </div>
+          )
+        }
+        
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import Web3 from "web3";
 import { providers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
-export const NavBar = () => {
+export const NavBar = ({isChairman}) => {
   const [walletConnected, setWalletConnected] = useState(false);
   const [address, setAddress] = useState("");
 
@@ -123,7 +123,7 @@ export const NavBar = () => {
     // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
   }, [walletConnected]);
   return (
-    <div>
+    <div className="sticky-top">
       <Navbar variant="primary" bg="white">
         <Container>
           <Navbar.Brand href="/">ZuriVote</Navbar.Brand>
@@ -131,19 +131,14 @@ export const NavBar = () => {
             <Nav.Link className="navlink mx-2" href="/">
               Home
             </Nav.Link>
-            {isStaff ? (
+            {isChairman ? (
               <Nav.Link className="navlink mx-2" href="/elections">
                 Manage
               </Nav.Link>
             ) : null}
-            {isStaff ? (
+            {isChairman ? (
               <Nav.Link className="navlink mx-2" href="/access">
                 Access control
-              </Nav.Link>
-            ) : null}
-            {isStaff ? (
-              <Nav.Link className="navlink mx-2" href="/tokens">
-                Token
               </Nav.Link>
             ) : null}
             <Nav.Link className="navlink mx-2" href="/voting">

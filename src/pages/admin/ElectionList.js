@@ -4,11 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { BigNumber, ethers } from "ethers";
 import voting from "../../utils/voting.json";
 
+
 const Elections = () => {
   const [election, setElection] = useState("");
   const [elections, setElections] = useState([]);
 
-  const voteContractAddress = "0x010a6fC859002Eb14940f03925E69FCfDF5c138f";
+  const voteContractAddress = voting.contract;
   const voteContractABI = voting.abi;
 
   let navigate = useNavigate();
@@ -34,7 +35,16 @@ const Elections = () => {
           gasLimit: 300000,
         });
         console.log(publicData);
-        setElections(publicData);
+        const reversePublicData = arr => {
+          let newArr = [];
+          arr.forEach(element => {
+            newArr.unshift(element);
+          });
+          return newArr;
+        } 
+        const t = await reversePublicData(publicData)
+        console.log(t);
+        setElections(t);
 
         //setStacked(Number(BigNumber.from(tokenStaked).toString()) / 10 ** 18);
         //setToken(Number(BigNumber.from(tokenBalance).toString()) / 10 ** 18);
@@ -60,21 +70,29 @@ const Elections = () => {
         <div className="d-flex justify-content-end">
           <a href="/new/">Create Election+</a>
         </div>
-        <div className="candidate_list">
-          {elections.map((name) => {
-            return (
-              <Link
-                to="/candidate"
-                state={{ name }}
-                onClick={() => console.log(name)}
-                className="candidate_item "
-              >
-                <h4>{name}</h4>
-                <p>Description</p>
-              </Link>
-            );
-          })}
-        </div>
+        {
+          !elections.length ? <p className="text-center">Loading...</p>
+          : (
+            <div className="candidate_list">
+              {elections.map((name) => {
+                return (
+                  <div
+                      
+                      className="candidate_item d-flex flex-column justify-content-around align-items-center"
+                    >
+                      <h4 className="text-center">{name.toUpperCase()}</h4>
+                      <Link 
+                        to="/candidate"
+                        state={{ name }}
+                        className="candidate_item_link "
+                      ><i class="bi bi-arrow-right" ></i></Link>
+                  </div>
+                );
+              })}
+            </div>
+          )
+        }
+        
       </div>
     </div>
   );

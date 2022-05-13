@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
 import { Button } from "react-bootstrap";
 import { Link} from 'react-router-dom';
+import "../App.css"
 
-const Home = () => {
+const Home = ({isChairman}) => {
 
     const [isStaff, setIsStaff] = useState(true);
 
@@ -15,13 +16,13 @@ const Home = () => {
                         <h1 className="lh-base fs-large fw-bolder">ZuriVote Provides A Trustless  Voting Platform </h1>
                         <p className="my-4">Every stakeholer(students and staff) now have a say in our elections. </p>
                     </div>
-                    <div className="home_buttons d-flex justify-content-around">
+                    <div className="home_buttons d-flex justify-content-around mt-5">
                     
-                    <Button href="/voting" className="fw-bold px-5 py-2" variant="primary">Create Vote</Button>
-                    {
-                        isStaff ? <Link to="/elections" className="fw-bold px-5 py-2" variant="primary">Manage Voting</Link>
-                        : null
-                    }
+                        <Button href="/voting" className=" fw-bold px-5 py-2" variant="primary">Create Vote</Button>
+                        {
+                            isChairman ? <Link to="/elections" className=" fw-bold px-5 py-2" variant="primary">Manage Voting</Link>
+                            : null
+                        }
                     </div>
                 </div>
             </div>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../styles/admin.css";
+import {Link} from 'react-router-dom'
 import { Button } from "react-bootstrap";
 import { BigNumber, ethers } from "ethers";
 import voting from "../../utils/voting.json";
 
-const NewElection = () => {
-  const voteContractAddress = "0x010a6fC859002Eb14940f03925E69FCfDF5c138f";
+const NewElection = ({isChairman}) => {
+  const voteContractAddress = voting.contract;
   const voteContractABI = voting.abi;
 
   const categoryRef = useRef();
@@ -78,36 +79,42 @@ const NewElection = () => {
     };
   }, []);
   return (
-    <div id="candidate">
-      <p>new election</p>
-      <hr></hr>
-      <form className="candidate_form">
-        <div className="header text-primary text-center font-italic">
-          <h3>Zuri Vote</h3>
-          <p>Voting platform</p>
+    <div>
+      { isChairman ? 
+        <div id="candidate">
+          <p>new election</p>
           <hr></hr>
+          <form className="candidate_form">
+            <div className="header text-primary text-center font-italic">
+              <h3>Zuri Vote</h3>
+              <p>Voting platform</p>
+              <hr></hr>
+            </div>
+            <div className="alert-success">{message.length > 0 ? message : ""}</div>
+            <div className="candidate_input">
+              <input
+                className="input"
+                value={newElection}
+                onChange={(e) => setNewElection(e.target.value)}
+                placeholder="Title of Election"
+              />
+              <select ref={categoryRef} style={{ marginTop: "20px" }}>
+                <option value="general">General</option>
+                <option value="student">Student</option>
+                <option value="bod">Bod</option>
+                <option value="staff">Staff</option>
+              </select>
+              <div>{loading === true ? "loading......" : ""}</div>
+              <Button className="button" onClick={createElection} variant="primary">
+                Create Election
+              </Button>
+            </div>
+          </form>
         </div>
-        <div className="alert-success">{message.length > 0 ? message : ""}</div>
-        <div className="candidate_input">
-          <input
-            className="input"
-            value={newElection}
-            onChange={(e) => setNewElection(e.target.value)}
-            placeholder="Title of Election"
-          />
-          <select ref={categoryRef} style={{ marginTop: "20px" }}>
-            <option value="general">General</option>
-            <option value="student">Student</option>
-            <option value="bod">Bod</option>
-            <option value="staff">Staff</option>
-          </select>
-          <div>{loading === true ? "loading......" : ""}</div>
-          <Button className="button" onClick={createElection} variant="primary">
-            Create Election
-          </Button>
-        </div>
-      </form>
+        : <Link className="text-center" to="/">Home</Link>
+      }
     </div>
+
   );
 };
 

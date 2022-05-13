@@ -10,41 +10,73 @@ import "./App.css";
 import { NavBar } from "./components/NavBar";
 import Airdrop from "./pages/admin/Airdrop";
 import AccessControl from "./pages/admin/AccessControl";
+import { BigNumber, ethers } from "ethers";
+import voting from "./utils/voting.json";
 
 function App() {
-  const [connected, setConnected] = useState(false);
+  const [isChairman, setIsChairman] = useState(false);
 
-  //component moun
-  useEffect(() => {});
 
-  //connect wallet
-  const connectWallet = () => {
-    const { ethereum } = window;
+  const voteContractAddress = voting.contract;
+  const voteContractABI = voting.abi;
 
-    setConnected(true);
+
+  const getChairman = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        //setLoading(true);
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        
+        const accounts = await ethereum.request({ method: "eth_accounts" });
+        let userAdr = accounts[0];
+        const signer = provider.getSigner();
+        const voteContract = new ethers.Contract(
+          voteContractAddress,
+          voteContractABI,
+          signer
+        );
+
+        const publicData = await voteContract.owner({
+          gasLimit: 300000,
+        });
+        console.log(publicData);
+        let ownerAdr = publicData
+
+        if(userAdr.toLowerCase() == ownerAdr.toLowerCase()) {
+          setIsChairman(true)
+        } else {setIsChairman(false)}
+
+        //setStacked(Number(BigNumber.from(tokenStaked).toString()) / 10 ** 18);
+        //setToken(Number(BigNumber.from(tokenBalance).toString()) / 10 ** 18);
+        //setLoading(false);
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  //disconnect wallet
-  const disconnectWallet = () => {
-    setConnected(false);
-  };
+  useEffect(() => {
+    getChairman();
+  },[]);
 
   return (
     <div>
       <NavBar
-        connectWallet={connectWallet}
-        disconnectWallet={disconnectWallet}
-        connected={connected}
+        
+        isChairman={isChairman}
       />
       <Routes>
-        <Route path="candidate" element={<Candidate />} />
+        <Route path="candidate" element={<Candidate isChairman={isChairman}/>} />
         <Route path="elections" element={<ElectionList />} />
-        <Route index element={<Home />} />
-        <Route path="voting" element={<VoteList />} />
+        <Route index element={<Home isChairman={isChairman}/>} />
+        <Route path="voting" element={<VoteList isChairman={isChairman}/>} />
         <Route path="vote" element={<VoteCards />} />
-        <Route path="new" element={<NewElection />} />
-        <Route path="tokens" element={<Airdrop />} />
-        <Route path="access" element={<AccessControl />} />
+        <Route path="new" element={<NewElection isChairman={isChairman}/>} />
+        <Route path="access" element={<AccessControl isChairman={isChairman}/>} />
       </Routes>
     </div>
   );

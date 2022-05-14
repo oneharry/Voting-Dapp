@@ -13,6 +13,7 @@ const NewElection = ({isChairman}) => {
     const [stakeholder, setStakeholder] = useState("")
     const [loading, setLoading] = useState(false);
     const [loading1, setLoading1] = useState(false);
+    const [loading2, setLoading2] = useState(false);
 
     const voteContractAddress = voting.contract;
     const voteContractABI = voting.abi;
@@ -86,7 +87,7 @@ const NewElection = ({isChairman}) => {
 
     const removeStakeholder = async(e) => {
         e.preventDefault()
-        setLoading1(true);
+        setLoading2(true);
         try {
             const {ethereum} = window;
 
@@ -104,7 +105,7 @@ const NewElection = ({isChairman}) => {
                 const publicData = await voteContract.removeStakeholderRole(stakeholder);
 
                 const removeStake = () => {
-                    setLoading1(false);
+                    setLoading2(false);
                     setMessage1("User removed succesfully");
                   };
               
@@ -119,9 +120,7 @@ const NewElection = ({isChairman}) => {
         }
     }
     
-    const transferChairmanRole = (e) => {
-        e.preventDefault()
-    }
+    
     return(
         <div>
             { isChairman ? (
@@ -131,9 +130,9 @@ const NewElection = ({isChairman}) => {
                             <form className='candidate_form'>
                                 <div>
                                     {
-                                        message1.length > 0 ? <Alert className=" position-fixed end-40 " variant="success" dismissible={true} >{message1}</Alert> : null
+                                        message1.length > 0 ? <Alert className=" sticky-top " variant="success" dismissible={true} >{message1}</Alert> : null
                                     }
-                                    <p className="text-center text-success">{loading1 === true ? "loading....." : ""}</p>
+                                    <p className="text-center sticky-top text-success">{loading1 === true ? "loading....." : ""}</p>
                                     <div className='mb-3 candidate_input'>
                                         <p className="text-center">{message1}</p>
                                         <h5 className='text-center'>Add Stakeholders</h5>
@@ -142,7 +141,7 @@ const NewElection = ({isChairman}) => {
                                                 loading1 ? "Please wait..." : "Register Stakeholder"
                                             }</Button>
                                         <Button onClick={removeStakeholder} className="button" variant="danger" >{
-                                                loading1 ? "Please wait..." : "Remove Stakeholder"
+                                                loading2 ? "Please wait..." : "Remove Stakeholder"
                                             }</Button>
                                     </div>
                                             {/* <div className='candidate_input pt-4'>
@@ -165,7 +164,7 @@ const NewElection = ({isChairman}) => {
                 
                                         <div className='pt-4 candidate_input'>
                                             {
-                                                message.length > 0 ? <Alert className=" position-fixed end-40 " variant="success" dismissible={true} >{message}</Alert> : null
+                                                message.length > 0 ? <Alert className=" sticky-top " variant="success" dismissible={true} >{message}</Alert> : null
                                             }
                                             <p className="text-center text-success">{loading === true ? "loading....." : ""}</p>
                                             <hr></hr>

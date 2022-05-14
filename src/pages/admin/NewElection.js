@@ -92,7 +92,7 @@ const NewElection = ({isChairman}) => {
               <hr></hr>
             </div>
             {
-                message.length > 0  ? <Alert className="mb-5 position-fixed fixed-bottom text-center" variant="success" >{message}</Alert> : null
+                message.length > 0  ? <Alert className=" position-fixed text-center" variant="success" >{message}</Alert> : null
             }
             <div className="candidate_input">
               <input
@@ -107,9 +107,10 @@ const NewElection = ({isChairman}) => {
                 <option value="bod">Bod</option>
                 <option value="staff">Staff</option>
               </select> */}
-              <p className="text-success text-center">{loading === true ? "loading......" : ""}</p>
+          
               <Button className="button" onClick={createElection} variant="primary">
-                Create Election
+          
+                {loading === true ? "Please wait..." : "Create Election"}
               </Button>
             </div>
           </form>

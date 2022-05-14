@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../styles/admin.css";
 import {Link} from 'react-router-dom'
-import { Button } from "react-bootstrap";
+import { Button, Alert } from "react-bootstrap";
 import { BigNumber, ethers } from "ethers";
 import voting from "../../utils/voting.json";
 
@@ -90,21 +90,23 @@ const NewElection = ({isChairman}) => {
               <p>Voting platform</p>
               <hr></hr>
             </div>
-            <div className="alert-success">{message.length > 0 ? message : ""}</div>
+            {
+                message.length > 0  ? <Alert className="mb-5 position-fixed fixed-bottom text-center" variant="success" >{message}</Alert> : null
+            }
             <div className="candidate_input">
               <input
                 className="input"
                 value={newElection}
                 onChange={(e) => setNewElection(e.target.value)}
-                placeholder="Title of Election"
+                placeholder="Name of Election"
               />
-              <select ref={categoryRef} style={{ marginTop: "20px" }}>
+              {/* <select ref={categoryRef} style={{ marginTop: "20px" }}>
                 <option value="general">General</option>
                 <option value="student">Student</option>
                 <option value="bod">Bod</option>
                 <option value="staff">Staff</option>
-              </select>
-              <div>{loading === true ? "loading......" : ""}</div>
+              </select> */}
+              <p className="text-success text-center">{loading === true ? "loading......" : ""}</p>
               <Button className="button" onClick={createElection} variant="primary">
                 Create Election
               </Button>

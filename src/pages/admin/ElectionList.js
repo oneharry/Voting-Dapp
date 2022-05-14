@@ -71,7 +71,7 @@ const Elections = () => {
           <a href="/new/">Create Election+</a>
         </div>
         {
-          !elections.length ? <p className="text-center">Loading...</p>
+          !elections.length ? <p className="text-center">Loading elections...</p>
           : (
             <div className="candidate_list">
               {elections.map((name) => {

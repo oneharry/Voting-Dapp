@@ -225,6 +225,7 @@ const Candidate = ({isChairman}) => {
           const candidateCreated = () => {
             setLoading(false);
             setMessage("Candidate added successfully");
+            nameRef.current.value = ""
           };
           
           voteContract.on("AddCandidate", candidateCreated);

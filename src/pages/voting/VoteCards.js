@@ -297,6 +297,9 @@ const Candidate = () => {
             {
                 message.length > 0 ? <Alert className=" position-fixed end-40 " variant="success" dismissible={true} >{message}</Alert> : null
             }
+            {
+                (!message.length && isUserVoted) ? <Alert className="mb-5 position-fixed fixed-bottom text-center" variant="warning" >You have voted!!!</Alert> : null
+            }
             <p className="text-center text-success">{loading === true ? "loading....." : ""}</p>
           {candidates.map((Candidate) => {
             return (
@@ -310,7 +313,7 @@ const Candidate = () => {
                 </div>
                 <h6>{Candidate.candidate}</h6>
                 <div>
-                  <button  className="btn text-light fw-bolder" {...(isUserVoted) && {disabled: false}} onClick={() => {
+                  <button  className="btn text-light fw-bolder" {...(isUserVoted) && {disabled: true}} onClick={() => {
                     setID(Candidate.id)
                     setCandidateName(Candidate.candidate)
                     handleShow()

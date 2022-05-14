@@ -37,7 +37,8 @@ const NewElection = ({isChairman}) => {
           signer
         );
 
-        const category = categoryRef.current.value;
+        // const category = categoryRef.current.value;
+        const category = "general";
         console.log(category);
 
         const Txn = await voteContract.createElection(newElection, category, {

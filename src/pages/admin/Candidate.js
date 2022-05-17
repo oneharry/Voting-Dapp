@@ -335,7 +335,15 @@ const Candidate = ({isChairman}) => {
 
   useEffect(async () => {
     try {
-      console.log(status)
+      const {ethereum} = window;
+
+      if(ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const voteContract = new ethers.Contract(voteContractAddress, voteContractABI, signer);
+
+      }
 
       await votingStatus();
       getElections();
@@ -349,6 +357,9 @@ const Candidate = ({isChairman}) => {
       console.log(error)
     }
 
+    return () => {
+      voteContract.removeAllListeners();
+    }
     
   }, [status, message]);
 

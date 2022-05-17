@@ -91,25 +91,6 @@
           "type": "string"
         }
       ],
-      "name": "ChangeVoteStatus",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "_electionName",
-          "type": "string"
-        }
-      ],
       "name": "CreateElection",
       "type": "event"
     },
@@ -137,6 +118,19 @@
         }
       ],
       "name": "RemoveStakeholderRole",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "ResultCompile",
       "type": "event"
     },
     {
@@ -628,5 +622,5 @@
       "type": "function"
     }
   ],
-  "contract": "0xf1bA58C37708FcDfdb03bb8d86A8c0bA09Dc812c"
+  "contract": "0x74095E46813d913e1b7aE6d470388A441C549560"
 }

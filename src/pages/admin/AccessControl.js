@@ -134,7 +134,7 @@ const NewElection = ({isChairman}) => {
                                     }
                                     <p className="text-center sticky-top text-success">{loading1 === true ? "loading....." : ""}</p>
                                     <div className='mb-3 candidate_input'>
-                                        <p className="text-center">{message1}</p>
+                                   
                                         <h5 className='text-center'>Add Stakeholders</h5>
                                         <input onChange={(e) => setStakeholder(e.target.value)} className="input" placeholder="Address..." />
                                         <Button onClick={registerStakeholder} className="button" variant="primary" >{

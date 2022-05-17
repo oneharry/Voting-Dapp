@@ -114,7 +114,7 @@ const Candidate = () => {
 
       //checks if user has already voted
         const isVoted = await voteContract.getVoter(name);
-
+        console.log(isVoted)
         setIsUserVoted(isVoted)
       } else {
         alert("Ethereum object doesn't exist!")

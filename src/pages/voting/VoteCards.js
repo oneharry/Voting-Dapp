@@ -88,7 +88,7 @@ const Candidate = () => {
           setMessage("Voting successful")
           setLoading(false);
           setTimeout(() => {
-            setVoted("")
+            setMessage("")
           },5000)
         }
 
@@ -240,10 +240,10 @@ const Candidate = () => {
         <div>
           <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>{candidateName}</Modal.Title>
+              <Modal.Title>{candidateName.toUpperCase()}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Are you sure!!</Modal.Body>
-            <Modal.Footer>
+            <Modal.Body>
+              <h3>Confirm your choice</h3>
               <Button variant="secondary" onClick={handleClose}>
                 Cancel
               </Button>
@@ -253,7 +253,10 @@ const Candidate = () => {
                 }}>
                 Vote
               </Button>
-            </Modal.Footer>
+            </Modal.Body>
+            {/* <Modal.Footer>
+              
+            </Modal.Footer> */}
           </Modal>
         </div>
       <div className="header text-primary text-center font-italic">
@@ -295,10 +298,10 @@ const Candidate = () => {
         <div className="voting_cards">
           
             {
-                message.length > 0 ? <Alert className=" position-fixed end-40 " variant="success" dismissible={true} >{message}</Alert> : null
+                message.length > 0 ? <Alert className=" position-fixed fixed-top text-center" variant="success" dismissible={true} >{message}</Alert> : null
             }
             {
-                (!message.length && isUserVoted) ? <Alert className="mb-5 position-fixed fixed-bottom text-center" variant="warning" >You have voted!!!</Alert> : null
+                (!message.length && isUserVoted) ? <Alert className="mb-5 position-fixed fixed-top text-center" variant="warning" >You have voted!!!</Alert> : null
             }
             <p className="text-center text-success">{loading === true ? "loading....." : ""}</p>
           {candidates.map((Candidate) => {

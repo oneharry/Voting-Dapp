@@ -107,6 +107,9 @@ const Candidate = ({isChairman}) => {
         const electionEnabled = () => {
           setLoading1(false);
           setMessage("Election has been enabled");
+          setTimeout(() => {
+            setMessage("")
+          },5000)
         };
         voteContract.on("EnableVoting", electionEnabled);
       
@@ -142,6 +145,9 @@ const Candidate = ({isChairman}) => {
         const electionStopped = () => {
           setLoading1(false);
           setMessage("Election has been stopped");
+          setTimeout(() => {
+            setMessage("")
+          },5000)
         };
     
         voteContract.on("StopVoting", electionStopped);
@@ -179,6 +185,9 @@ const Candidate = ({isChairman}) => {
         const resultEnabled = () => {
           setLoading1(false);
           setMessage("Result view is enabled");
+          setTimeout(() => {
+            setMessage("")
+          },5000)
         };
     
         voteContract.on("changeVoteStatus", resultEnabled);
@@ -226,6 +235,9 @@ const Candidate = ({isChairman}) => {
             setLoading(false);
             setMessage("Candidate added successfully");
             nameRef.current.value = ""
+            setTimeout(() => {
+              setMessage("")
+            },5000)
           };
           
           voteContract.on("AddCandidate", candidateCreated);
@@ -346,9 +358,6 @@ const Candidate = ({isChairman}) => {
         getElections();
         fetchResults()
         getNumberOfVoters()
-        setTimeout(() => {
-          setMessage("")
-        }, 5000)
         return () => {
           voteContract.removeAllListeners();
         }
@@ -374,7 +383,7 @@ const Candidate = ({isChairman}) => {
         { isChairman ?  (
         <div id="candidate">
         {
-                message.length > 0 ? <Alert className=" position-fixed end-40 " variant="success" dismissible={true} >{message}</Alert> : null
+                message.length > 0 ? <Alert className=" position-fixed text-center " variant="success" dismissible={true} >{message}</Alert> : null
         }
         <p>{name}</p>
 

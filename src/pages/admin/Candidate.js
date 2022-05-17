@@ -342,24 +342,25 @@ const Candidate = ({isChairman}) => {
         const signer = provider.getSigner();
 
         const voteContract = new ethers.Contract(voteContractAddress, voteContractABI, signer);
-
+        await votingStatus();
+        getElections();
+        fetchResults()
+        getNumberOfVoters()
+        setTimeout(() => {
+          setMessage("")
+        }, 5000)
+        return () => {
+          voteContract.removeAllListeners();
+        }
       }
 
-      await votingStatus();
-      getElections();
-      fetchResults()
-      getNumberOfVoters()
-      setTimeout(() => {
-        setMessage("")
-      }, 5000)
+      
 
     } catch (error) {
       console.log(error)
     }
 
-    return () => {
-      voteContract.removeAllListeners();
-    }
+    
     
   }, [status, message]);
 
